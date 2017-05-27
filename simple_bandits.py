@@ -164,13 +164,8 @@ class UCB1():
         self.p=np.random.rand(self.no_arms)*100
 
 
-<<<<<<< HEAD
 no_events=10000
 no_runs=100
-=======
-no_events=1000
-no_runs=10000
->>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
 
 band=Bandit(no_arms=10)
 hyperTS=HyperTS([Thompson(no_arms=10,alpha=0.5,beta=0.5),UCB1(no_arms=10),E_greedy(no_arms=10,epsilon=0.1)])
@@ -179,34 +174,20 @@ thomp=Thompson(no_arms=10,alpha=0.5,beta=0.5)
 ucb1=UCB1(no_arms=10)
 e_greedy1=E_greedy(no_arms=10,epsilon=0.1)
 #avg_ctr=np.zeros(1000)
-<<<<<<< HEAD
 models=[hyperTS,e_greedy1,ucb1,thomp]
 colors=['black','blue','red','green']
 labels=['hyperTS','$\epsilon$-greedy 0.1',  "UCB1","Thompson"]
-=======
-models=[hyperUCB1,e_greedy1,ucb1,thomp]
-colors=['black','blue','red','green']
-labels=['hyperUCB1','$\epsilon$-greedy 0.1', "Thompson", "UCB1"]
->>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
 
 cind=0
 stats_mtrx=np.empty([no_runs,no_events])
 
 
 for model in models:
-<<<<<<< HEAD
     print("New Model")
     best_choice=np.zeros(no_events)
     spot_ctr=np.zeros(no_events)
     for j in range(no_runs):
         print(j)
-=======
-    print "New Model"
-    best_choice=np.zeros(no_events)
-    spot_ctr=np.zeros(no_events)
-    for j in range(no_runs):
-        print j
->>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
         CTR=[]
         t=0
         r=0
