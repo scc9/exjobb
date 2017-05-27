@@ -4,6 +4,10 @@ import random
 import scipy as sp
 import matplotlib.pyplot as plt
 import linUCB_model as ucb
+<<<<<<< HEAD
+import model_thompsonSGD as tmp
+=======
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
 
 '''
 Multi armed bandit test bench with support for multi contexts
@@ -18,7 +22,22 @@ class Bandit():
     def __init__(self,no_arms=5,no_contexts=3):
         #List of list of lists
         self.no_contexts=no_contexts
+<<<<<<< HEAD
+        #self.bern_p=[np.random.choice([0.01, 0.05, 0.09], size=(no_contexts,), p=[3./5, 1./5, 1./5 ]) for i in range(no_arms)]
+        p1=[0.09,0.05,0.01] #BEST ARM FOR CONTEXT1
+        p2=[0.05,0.09,0.01] #BEST ARM FOR CONTEXT2
+        p3=[0.01,0.05,0.09] #BEST ARM FOR CONTEXT3
+        p4=[0.06,0.06,0.06] #BEST ARM FOR NON CONTEXTUAL Bandit
+        p5=[0.05,0.05,0.05] #EQUIVALENT TO ARM 1-3 for NON CONTEXTUAL Bandit
+        p6=[0.03,0.04,0.05] #SUBOPTIMAL ARM
+        p7=[0.03,0.03,0.03] #SUBOPTIMAL ARM
+        p8=[0.01,0.01,0.01] #SUBOPTIMAL ARM
+        p9=[0.01,0.01,0.01] #SUBOPTIMAL ARM
+        p10=[0.01,0.01,0.01] #SUBOPTIMAL ARM
+        self.bern_p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10]
+=======
         self.bern_p=[np.random.choice([0.01, 0.05, 0.09], size=(no_contexts,), p=[3./5, 1./5, 1./5 ]) for i in range(no_arms)]
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
         self.no_arms=no_arms
         self.contexts=[np.append(1,np.random.choice([0.9, 0.1], size=(9,), p=[1./2, 1./2 ])) for j in range(no_contexts)]
         temp=[]
@@ -44,6 +63,10 @@ class Bandit():
 class HyperTS():
     def __init__(self,arm_list,alpha=0.5,beta=0.5):
         self.no_arms=len(arm_list)
+<<<<<<< HEAD
+        self.rng=True
+=======
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
         self.beta=beta
         self.curr_arm=0
         self.alpha=alpha
@@ -68,6 +91,16 @@ class HyperTS():
         self.no_fails=np.ones(self.no_arms)*self.beta
         for arm in self.arm_list:
             arm.reset_stats()
+<<<<<<< HEAD
+            arm.rng=True
+
+    def update_model(self):
+        for model in self.arm_list:
+            model.update_model()
+            model.rng=False
+            print("UPDATING MODELS!! IN HYPER TS")
+=======
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
 
 
 class Thompson():
@@ -187,21 +220,63 @@ class UCB1():
 
 
 
+<<<<<<< HEAD
+no_events=20001
+delay=1000 # bandit algs are updated each #delay steps to simmulate delayed feedback
+no_runs=10
+=======
 no_events=10000
 no_runs=100
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
 no_arms=10
 no_features=10
 band=Bandit(no_arms=no_arms)
 
 linUCB_model0=ucb.LINUCB(alpha=0,no_features=no_features,no_arms=no_arms)
 linUCB_model01=ucb.LINUCB(alpha=0.1,no_features=no_features,no_arms=no_arms)
+<<<<<<< HEAD
+
+=======
 linUCB_model1=ucb.LINUCB(alpha=1,no_features=no_features,no_arms=no_arms)
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
 linUCB_model2=ucb.LINUCB(alpha=2,no_features=no_features,no_arms=no_arms)
 
 
 
 
 
+<<<<<<< HEAD
+logreg_greedy=tmp.Model(0.01,10,10,'greedy',epsilon=0)
+logreg_epsilon=tmp.Model(0.01,10,10,'epsilon',epsilon=0.1)
+logreg_boltzman=tmp.Model(0.01,10,10,'boltzman',epsilon=0.01)
+thomp=Thompson(no_arms=10,alpha=0.5,beta=0.5)
+
+#hyperUCB1=HyperUCB1([Thompson(no_arms=10,alpha=0.5,beta=0.5),UCB1(no_arms=10),E_greedy(no_arms=10,epsilon=0.1)])
+
+
+ucb1=UCB1(no_arms=10)
+e_greedy1=E_greedy(no_arms=10,epsilon=0.1)
+#avg_ctr=np.zeros(1000)
+hyperTS=HyperTS([linUCB_model01,logreg_greedy,logreg_epsilon,logreg_boltzman])
+models=[logreg_greedy,logreg_epsilon,logreg_boltzman,linUCB_model01,hyperTS]#,thomp,linUCB_model01,hyperTS]
+colors=['black','blue','red','green','pink','gray']
+linestyles = ['-', '-', '-', '-','--']
+labels=['Greedy','Epsilon 0.1','boltzman 0.01','linUCB 01', 'HyperTS']
+
+cind=0
+stats_mtrx=np.zeros([no_runs,no_events])
+
+ctr_delay=np.zeros(int(no_events/delay))
+R_delay=0
+delay_ind=0
+for model in models:
+    print("New Model")
+    print(cind)
+    #best_choice=np.zeros(no_events)
+    #spot_ctr=np.zeros(no_events)
+    for j in range(no_runs):
+        print(j)
+=======
 
 thomp=Thompson(no_arms=10,alpha=0.5,beta=0.5)
 hyperTS=HyperTS([thomp,linUCB_model01,linUCB_model1,linUCB_model2])
@@ -226,6 +301,7 @@ for model in models:
     #spot_ctr=np.zeros(no_events)
     for j in range(no_runs):
         print j
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
         CTR=[]
         t=0
         r=0
@@ -236,6 +312,35 @@ for model in models:
             fb=band.feed_back(arm,ctx)
             model.update_stats(arm,features,fb)
 
+<<<<<<< HEAD
+            R_delay+=fb
+            t+=1
+            r+=fb
+            stats_mtrx[j,i]=r/t
+            '''
+            if stats_mtrx[j,i] >1:
+                print("WARNING!")
+                print(r)
+                print(t)
+                raw_input()
+            '''
+            if i>0 and i%delay==0:
+                model.update_model()
+                model.rng=False
+                ctr_delay[delay_ind]+=R_delay
+                delay_ind+=1
+                R_delay=0
+                #pp=np.zeros(no_arms)
+
+                #for i in range(no_arms):
+                #    pp[i]=model.predict(i,features)
+                #print pp
+
+        model.reset_stats()
+        model.rng=True
+        R_delay=0
+        delay_ind=0
+=======
             #arm2=e_greedy.recommend()
             #fb2=band.feed_back(arm2)
             #e_greedy2.update_stats(arm2,fb2)
@@ -255,17 +360,29 @@ for model in models:
 
 
         model.reset_stats()
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
         #e_greedy.reset_stats()
         #ucb1.reset_stats()
         #thomp.reset_stats()
         #print r/t
 
 
+<<<<<<< HEAD
+    ctr_delay=ctr_delay/(delay*no_runs)
+    mean=np.zeros(no_events)
+    #std=np.empty(no_events)
+    for k in range(no_events):
+        mean[k]=np.mean(stats_mtrx[:,k])
+        if mean[k]==0:
+            print(k)
+
+=======
 
     mean=np.empty(no_events)
     std=np.empty(no_events)
     for k in range(no_events):
         mean[k]=np.mean(stats_mtrx[:,k])
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
         #std[k]=np.std(stats_mtrx[:,k])/2  #half std
     x=range(no_events)
     #up=np.add(mean,std/2)
@@ -276,8 +393,16 @@ for model in models:
     f1 = plt.figure(1)
     plt.plot(x,mean,linewidth=3.0,color=colors[cind],linestyle=linestyles[cind],label=labels[cind])
     #plt.fill_between(x,up,down,facecolor=colors[cind],alpha=0.3)
+<<<<<<< HEAD
+    f2 = plt.figure(2)
+    plt.plot(np.array(range(len(ctr_delay)))*delay,ctr_delay,linewidth=3.0,color=colors[cind],linestyle=linestyles[cind],label=labels[cind])
+    cind+=1
+
+plt.figure(1)
+=======
 
     cind+=1
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
 plt.plot(x,np.ones(len(x))*band.omni,linewidth=2.0,color="gray",linestyle=':',label="upper limit")
 plt.xlabel("Plays")
 plt.ylabel("Accumulated success rate")
@@ -285,6 +410,19 @@ plt.title("10 Armed bandit with 3 base contexts / arm")
 plt.xlim([0,no_events])
 plt.ylim([0.0,0.10])
 plt.legend(loc=2)
+<<<<<<< HEAD
+
+
+plt.figure(2)
+plt.plot(x,np.ones(len(x))*band.omni,linewidth=2.0,color="gray",linestyle=':',label="upper limit")
+plt.xlabel("Plays")
+plt.ylabel("Success rate per update")
+plt.title("10 Armed bandit with 3 base contexts / arm")
+plt.xlim([0,no_events])
+plt.ylim([0.0,0.10])
+plt.legend(loc=2)
+=======
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
 '''
     f2= plt.figure(2)
     plt.scatter(x,best_choice/no_runs,s=0.5,color=colors[cind],label=labels[cind])
@@ -307,10 +445,17 @@ plt.legend(loc=2)
 '''
 f1.show()
 
+<<<<<<< HEAD
+f2.show()
+
+#f3.show()
+input()
+=======
 #f2.show()
 
 #f3.show()
 raw_input()
+>>>>>>> d384d4be0b58b6dec97993882bc7fe515459ad45
 
 plt.close()
 
