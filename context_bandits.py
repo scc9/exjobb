@@ -5,7 +5,7 @@ import scipy as sp
 import matplotlib.pyplot as plt
 import linUCB_model as ucb
 import model_thompsonSGD as tmp
-
+import nn_model
 '''
 Multi armed bandit test bench with support for multi contexts
 
@@ -20,16 +20,16 @@ class Bandit():
         #List of list of lists
         self.no_contexts=no_contexts
         #self.bern_p=[np.random.choice([0.01, 0.05, 0.09], size=(no_contexts,), p=[3./5, 1./5, 1./5 ]) for i in range(no_arms)]
-        p1=[0.09,0.05,0.01] #BEST ARM FOR CONTEXT1
-        p2=[0.05,0.09,0.01] #BEST ARM FOR CONTEXT2
-        p3=[0.01,0.05,0.09] #BEST ARM FOR CONTEXT3
-        p4=[0.06,0.06,0.06] #BEST ARM FOR NON CONTEXTUAL Bandit
-        p5=[0.05,0.05,0.05] #EQUIVALENT TO ARM 1-3 for NON CONTEXTUAL Bandit
-        p6=[0.03,0.04,0.05] #SUBOPTIMAL ARM
-        p7=[0.03,0.03,0.03] #SUBOPTIMAL ARM
-        p8=[0.01,0.01,0.01] #SUBOPTIMAL ARM
-        p9=[0.01,0.01,0.01] #SUBOPTIMAL ARM
-        p10=[0.01,0.01,0.01] #SUBOPTIMAL ARM
+        p1=[0.09,0.05,0.01,0.07,0.10,0.03,0.06,0.04,0.05,0.05,0.03,0.12] #BEST ARM FOR CONTEXT1
+        p2=[0.05,0.12,0.01,0.07,0.01,0.07,0.07,0.01,0.08,0.01,0.03,0.09] #BEST ARM FOR CONTEXT2
+        p3=[0.01,0.05,0.12,0.01,0.01,0.01,0.07,0.08,0.06,0.01,0.03,0.01] #BEST ARM FOR CONTEXT3
+        p4=[0.06,0.08,0.06,0.12,0.01,0.05,0.07,0.07,0.06,0.06,0.03,0.08] #BEST ARM FOR NON CONTEXTUAL Bandit
+        p5=[0.05,0.05,0.05,0.01,0.12,0.01,0.07,0.07,0.01,0.01,0.03,0.02] #EQUIVALENT TO ARM 1-3 for NON CONTEXTUAL Bandit
+        p6=[0.03,0.04,0.05,0.01,0.01,0.12,0.07,0.07,0.01,0.01,0.09,0.03] #SUBOPTIMAL ARM
+        p7=[0.03,0.03,0.03,0.01,0.01,0.07,0.12,0.01,0.07,0.06,0.03,0.07] #SUBOPTIMAL ARM
+        p8=[0.06,0.08,0.07,0.017,0.07,0.01,0.01,0.12,0.01,0.08,0.03,0.06] #SUBOPTIMAL ARM
+        p9=[0.06,0.01,0.06,0.01,0.07,0.07,0.06,0.06,0.12,0.01,0.12,0.08] #SUBOPTIMAL ARM
+        p10=[0.01,0.06,0.06,0.01,0.01,0.07,0.01,0.01,0.01,0.12,0.03,0.06] #SUBOPTIMAL ARM
         self.bern_p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10]
         self.no_arms=no_arms
         self.contexts=[np.append(1,np.random.choice([0.9, 0.1], size=(9,), p=[1./2, 1./2 ])) for j in range(no_contexts)]
@@ -207,12 +207,12 @@ class UCB1():
 
 
 
-no_events=20001
-delay=1000 # bandit algs are updated each #delay steps to simmulate delayed feedback
+no_events=50001
+delay=5000 # bandit algs are updated each #delay steps to simmulate delayed feedback
 no_runs=10
 no_arms=10
 no_features=10
-band=Bandit(no_arms=no_arms)
+band=Bandit(no_arms=no_arms,no_contexts=12)
 
 linUCB_model0=ucb.LINUCB(alpha=0,no_features=no_features,no_arms=no_arms)
 linUCB_model01=ucb.LINUCB(alpha=0.1,no_features=no_features,no_arms=no_arms)
@@ -225,20 +225,22 @@ linUCB_model2=ucb.LINUCB(alpha=2,no_features=no_features,no_arms=no_arms)
 
 logreg_greedy=tmp.Model(0.01,10,10,'greedy',epsilon=0)
 logreg_epsilon=tmp.Model(0.01,10,10,'epsilon',epsilon=0.1)
-logreg_boltzman=tmp.Model(0.01,10,10,'boltzman',epsilon=0.01)
+logreg_boltzman001=tmp.Model(0.01,10,10,'boltzman',epsilon=0.01)
+logreg_boltzman01=tmp.Model(0.01,10,10,'boltzman',epsilon=0.1)
+logreg_boltzman1=tmp.Model(0.01,10,10,'boltzman',epsilon=0.001)
 thomp=Thompson(no_arms=10,alpha=0.5,beta=0.5)
 
 #hyperUCB1=HyperUCB1([Thompson(no_arms=10,alpha=0.5,beta=0.5),UCB1(no_arms=10),E_greedy(no_arms=10,epsilon=0.1)])
-
+nn_band=nn_model.Bandit(10,explorer='greedy')
 
 ucb1=UCB1(no_arms=10)
 e_greedy1=E_greedy(no_arms=10,epsilon=0.1)
 #avg_ctr=np.zeros(1000)
-hyperTS=HyperTS([linUCB_model01,logreg_greedy,logreg_epsilon,logreg_boltzman])
-models=[logreg_greedy,logreg_epsilon,logreg_boltzman,linUCB_model01,hyperTS]#,thomp,linUCB_model01,hyperTS]
+hyperTS=HyperTS([linUCB_model01,nn_band])
+models=[nn_band,linUCB_model01,hyperTS]#,thomp,linUCB_model01,hyperTS]
 colors=['black','blue','red','green','pink','gray']
 linestyles = ['-', '-', '-', '-','--']
-labels=['Greedy','Epsilon 0.1','boltzman 0.01','linUCB 01', 'HyperTS']
+labels=['Neural bandit','LinUCB 0.1','HyperTS','linUCB 01', 'HyperTS']
 
 cind=0
 stats_mtrx=np.zeros([no_runs,no_events])
@@ -324,7 +326,7 @@ plt.xlabel("Plays")
 plt.ylabel("Accumulated success rate")
 plt.title("10 Armed bandit with 3 base contexts / arm")
 plt.xlim([0,no_events])
-plt.ylim([0.0,0.10])
+plt.ylim([0.0,0.12])
 plt.legend(loc=2)
 
 
@@ -334,7 +336,7 @@ plt.xlabel("Plays")
 plt.ylabel("Success rate per update")
 plt.title("10 Armed bandit with 3 base contexts / arm")
 plt.xlim([0,no_events])
-plt.ylim([0.0,0.10])
+plt.ylim([0.0,0.12])
 plt.legend(loc=2)
 '''
     f2= plt.figure(2)
